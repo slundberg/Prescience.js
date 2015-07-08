@@ -1,0 +1,5 @@
+<template>
+	<svg height.bind="height" width.bind="width">
+      <text repeat.for="d of tickMarks" x.bind="$parent.scale(d)" y.bind="$parent.height" text-anchor="middle" style="user-select: none; -webkit-user-select: none;">${$parent.tickFormat(d)}</text>
+  </svg>
+</template>

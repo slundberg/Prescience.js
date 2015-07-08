@@ -1,0 +1,14 @@
+<template>
+  <require from="./drag-watch"></require>
+
+  <!--<div jquery.modal="show: true; keyboard.bind: allowKeyboard">my stuff</div>-->
+	<div style="height: 100px; user-select: none; -webkit-user-select: none;">
+		<svg height.bind="height" width.bind="width" drag-watch.call="dragMove($event)">
+				<text repeat.for="d of ytickMarks" x="10" y.bind="$parent.yscale(d)" text-anchor="left">${$parent.ytickFormat(d)}</text>
+        <!--<path class="line" d.bind="lineData" style="stroke: #000; stroke-width: 2px; fill: none;"></path>-->
+        <circle repeat.for="d of pointCoords" cx.bind="d[0]" cy.bind="d[1]" r="5" fill="#900" />
+        <!--<text repeat.for="d of tickMarks" x.bind="$parent.xscale(d)" y="97" text-anchor="middle">${$parent.xtickFormat(d)}</text>-->
+    </svg>
+	</div>
+	<!--<span repeat.for="d of testData">${d}</span>-->
+</template><!--mousedown.delegate="dragStart()" mousemove.delegate="dragMove()" mouseup.delegate="dragStop()"jquery.draggable="{}" helpder: () => dragMove; jquery.draggable="start: () => console.log('sdf')" -->

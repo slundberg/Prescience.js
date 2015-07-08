@@ -1,0 +1,73 @@
+<template>
+  <require from="./series-plot"></require>
+  <require from="./series"></require>
+  <require from="./series-xaxis"></require>
+  
+  <!-- <section>
+    <h2>${heading}</h2>
+    <form role="form" submit.delegate="welcome()">
+      <div class="form-group">
+        <label for="fn">First Name</label>
+        <input type="text" value.bind="firstName" class="form-control" id="fn" placeholder="first name">
+      </div>
+      <div class="form-group">
+        <label for="ln">Last Name</label>
+        <input type="text" value.bind="lastName" class="form-control" id="ln" placeholder="last name">
+      </div>
+      <div class="form-group">
+        <label>Full Name</label>
+        <p class="help-block">${fullName}</p>
+      </div>
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+  </section>
+  <section> -->
+    <!-- <xaxis time-series-xaxis.ref="xaxis" width="500" height="20"></xaxis> -->
+    <!-- <time-series data.bind="data.monitor.NIBPS" xaxis.bind="xaxis" width="500" height="100">
+
+    </time-series> -->
+    <series-xaxis series-xaxis.ref="xaxis" width.bind="width" height="20"></series-xaxis><br>
+    <series-plot xaxis.bind="xaxis" width.bind="width" height="100" ylabel="Blood pressure" yunits="mm Hg">
+      <series data.bind="data.monitor.NIBPS" label="NIBP sys" symbol="triangle-down" color="#a80808"></series>
+      <series data.bind="data.monitor.NIBPM" label="NIBP mean" symbol="square" color="#a80808"></series>
+      <series data.bind="data.monitor.NIBPD" label="NIBP dys" symbol="triangle-up" color="#a80808"></series>
+    </series-plot><br><!-- 
+    <div style="width: 100%; height: 2px; background: #ccc;"></div>
+    <series-plot xaxis.bind="xaxis" width.bind="width" height="100" ylabel="Air fraction" yunits="%">
+      <series data.bind="data.monitor.FIO2" label="FiO2" symbol="circle" color="#1b71f1"></series>
+      <series data.bind="data.monitor.FINO" label="FiNO" symbol="square" color="#53bf0f"></series>
+      <series data.bind="data.monitor.ETCO2" label="End-tidal CO2" symbol="cross" color="#333"></series>
+      <series data.bind="data.monitor.ETSEV" label="End-tidal sev" symbol="diamond" color="#db8b00"></series>
+    </series-plot><br>
+    <div style="width: 100%; height: 2px; background: #ccc;"></div>
+    <series-plot xaxis.bind="xaxis" width.bind="width" height="100" ylabel="Air pressure" yunits="cm H2O">
+      <series data.bind="data.monitor.PEAK" label="PEAK" symbol="circle"></series>
+      <series data.bind="data.monitor.PEAKPRESSURE" label="Peak pressure" symbol="square"></series>
+      <series data.bind="data.monitor.PEEP" label="PEEP" symbol="diamond"></series>
+      <series data.bind="data.monitor.PIP" label="PIP" symbol="triangle-down"></series>
+    </series-plot><br> -->
+    <div style="width: 100%; height: 2px; background: #ccc;"></div>
+    <series-plot xaxis.bind="xaxis" width.bind="width" height="100" ylabel="Rate" yunits="# per min">
+      <series data.bind="data.monitor.ECGRATE" label="ECGRATE" symbol="circle"></series>
+      <series data.bind="data.monitor.EKG" label="EKG" symbol="cross"></series>
+      <series data.bind="data.monitor.PULSE" label="PULSE" symbol="triangle-up"></series>
+      <series data.bind="data.monitor.RESPRATE" label="RESPRATE" symbol="diamond"></series>
+      <series data.bind="data.monitor.RATE" label="RATE" symbol="square"></series>
+    </series-plot><br>
+    <div style="width: 100%; height: 2px; background: #ccc;"></div>
+    <series-plot xaxis.bind="xaxis" width.bind="width" height="100" ylabel="Saturation" yunits="%">
+      <series data.bind="data.monitor.SAO2"  label="SaO2" symbol="circle"></series>
+    </series-plot><br>
+    <div style="width: 100%; height: 2px; background: #ccc;"></div>
+    <series-plot xaxis.bind="xaxis" width.bind="width" height="100" ylabel="Air flow" yunits="?">
+      <series data.bind="data.monitor.AIRFLOW"  label="Air flow" symbol="circle"></series>
+    </series-plot>
+
+    <!-- <time-series data.bind="data.monitor.NIBPM" xaxis.bind="xaxis" width="500" height="100"></time-series> -->
+  </section>
+  <!-- <series data.bind="[[1,2],[3,4]]"></series> -->
+  <div value.bind="favoriteColor">
+    <div>Select A Color</div>
+    <div repeat.for="color of colors" fred="${color}">${color}</div>
+  </div>
+</template>
