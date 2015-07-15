@@ -8,6 +8,7 @@ export class SeriesPlot {
 	@bindable xaxis;
 	@bindable ylabel;
 	@bindable yunits;
+	@bindable now;
 
 	constructor(element) {
 		this.element = element;
@@ -22,13 +23,11 @@ export class SeriesPlot {
 	}
 
 	attached() {
-		//this.svg = d3.select(this.element).select("svg");
 		this.svg = d3.select(this.element).select("svg");
 		this.zoomable = this.svg.select(".zoomable");
 		var test = () => this.zoomUpdated();
-		//this.zoom = d3.behavior.zoom().on("zoom", test);
 		this.svg.call(this.xaxis.zoom)
-			.on("wheel.zoom",null) 
+			.on("wheel.zoom",null)
 	  		.on("mousewheel.zoom", null)
 	  		.on("DOMMouseScroll.zoom", null);
 
@@ -43,28 +42,24 @@ export class SeriesPlot {
 
 	xaxisChanged() {
 		this.xaxis.register(this);
-		this.xaxis.domain(d3.extent(d3.merge(this.series.map(s => s.xextent))));
 	}
 
-
-
-	// zoomUpdated(xoffset, xscale) {
-	// 	this.zoomable.attr("transform", "translate(" + xoffset + ",0)scale(" + xscale + ")");
+	// nowChanged() {
+	// 	console.log("now", this.now)
+	// 	this.dataUpdated();
 	// }
 
 	dataUpdated() {
-		this.xaxis.domain(d3.extent(d3.merge(this.series.map(s => s.xextent))));
 		this.yscale.domain(d3.extent(d3.merge(this.series.map(s => s.yextent))));
-		//console.log("YY", d3.extent(d3.merge(this.series.map(s => s.yextent))), this.yscale(90), this.yscale(110))
 		this.updateTicks();
-		
+		this.scaleUpdated();
 	}
 
 	updateTicks() {
 		this.ytickFormat = this.yscale.tickFormat(3, ".0");
 		this.ytickMarks = this.yscale.ticks(3).map(x => [
 			Math.floor(this.yscale(x)),
-			this.ytickFormat(x)
+			(+parseFloat(this.ytickFormat(x)).toFixed(4))
 		]);
 		this.ytickLines = this.ytickMarks.map(x => {
 			return "M20,"+x[0]+"V0H"+this.width;
@@ -82,8 +77,11 @@ export class SeriesPlot {
 	}
 
 	updateLabels() {
-		this.labels = this.series.map(x => [x.label, x.symbolGenerator ? x.symbolGenerator() : "", x.hidden]);
-		console.log("labels", this.labels)
+		this.labels = this.series.map(x => [
+			x.label, x.symbolGenerator ? x.symbolGenerator() : "",
+			x.hidden,
+			x.color
+		]);
 	}
 
 	dragMove(e) {
@@ -100,7 +98,7 @@ export class SeriesPlot {
 	}
 
 	buildColorSet(numColors) {
-    	
+
         var colors = [d3.rgb(27, 113, 241), d3.rgb(83, 191, 15), d3.rgb(219, 139, 0), d3.rgb(204, 24, 24), d3.rgb(161, 117, 191)];
         if (numColors === 1) return [colors[0].toString()];
 

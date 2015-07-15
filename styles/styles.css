@@ -1,5 +1,16 @@
 body {
   margin: 0;
+  overflow-x: hidden;
+}
+
+.labelCell {
+    font-weight: bold;
+    text-align: right;
+}
+
+.dateSuffix {
+    color: #999;
+    font-size: 12px;
 }
 
 .splash {

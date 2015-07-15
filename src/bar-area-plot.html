@@ -1,0 +1,14 @@
+<template>
+  <svg height.bind="height*tracks.length" width.bind="width"  style="user-select: none; -webkit-user-select: none; display: block;">
+    <rect repeat.for="label of labels" x="0" y.bind="$parent.height*$index + $parent.height/2" width="100%" height="1" fill="#eee"></rect>
+    <g class="zoomable">
+      <content></content>
+    </g>
+    <rect x="0" y="0" width="185" height="100%" fill="rgba(255,255,255,0.9)"></rect>
+    <g repeat.for="label of labels" style="cursor: pointer" click.delegate="$parent.labelClick($index)">
+      <text x="180" y.bind="$parent.height*$index + $parent.height/2" text-anchor="end" font-size="11px" alignment-baseline="middle">${label[0]}</text>
+      <!-- <path transform.bind="'translate(10,'+($parent.height*$index)+')'" fill.bind="label[2]" d.bind="label[1]"></path> -->
+    </g>
+    <text repeat.for="d of ytickMarks" x="180" y.bind="d[0]" text-anchor="end" font-size="11px" alignment-baseline="middle">${d[1]}</text>
+  </svg>
+</template>

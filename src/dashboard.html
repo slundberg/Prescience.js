@@ -1,0 +1,103 @@
+<template>
+  <require from="./events-plot"></require>
+  <require from="./bar-area-plot"></require>
+  <require from="./bar-area"></require>
+  <require from="./series-plot"></require>
+  <require from="./series"></require>
+  <require from="./dosage-plot"></require>
+  <require from="./dosage"></require>
+  <require from="./series-xaxis"></require>
+  <require from="./scroll-shadow"></require>
+  <require from="./date-format"></require>
+
+  <div scroll-shadow style="position: fixed; width: 100%; height: 22px; background: #fff">
+    <series-xaxis series-xaxis.ref="xaxis" width.bind="width" height="17"></series-xaxis>
+  </div>
+  <div style="width: 100%; height: 22px;"></div>
+  <events-plot data.bind="procEvents" xaxis.bind="xaxis" width.bind="width" height="15"></events-plot>
+  <template repeat.for="group of displayedGroups">
+    <template if.bind="group.type == 'series'">
+      <series-plot xaxis.bind="$parent.xaxis" width.bind="$parent.width" height="100" ylabel.bind="group.label" yunits.bind="group.units">
+        <series repeat.for="track of group.tracks" if.bind="track.data.length > 0" data.bind="track.data" label.bind="track.label" symbol.bind="track.symbol" color.bind="$parent.group.color"></series>
+      </series-plot>
+    </template>
+    <template if.bind="group.type == 'bar-area'">
+      <bar-area-plot xaxis.bind="$parent.xaxis" width.bind="$parent.width" height="30" ylabel.bind="group.label" yunits.bind="group.units">
+        <bar-area repeat.for="track of group.tracks" if.bind="track.data.length > 0" data.bind="track.data" label.bind="track.label" symbol.bind="track.symbol" color.bind="$parent.group.color"></bar-area>
+      </bar-area-plot>
+    </template>
+    <template if.bind="group.type == 'dosage'">
+      <dosage-plot xaxis.bind="$parent.xaxis" width.bind="$parent.width" height="18">
+        <dosage repeat.for="track of group.tracks" if.bind="track.data.length > 0" data.bind="track.data" label.bind="track.label" color.bind="$parent.group.color"></dosage>
+      </dosage-plot>
+    </template>
+    <div style="width: 100%; height: 1px; background: #ccc;"></div>
+  </template>
+
+  <div style="width: 48%; float: right; margin-top: 0px; padding: 50px;" valign="top">
+    <h4>Lab tests</h4>
+    <table class="table">
+      <tr repeat.for="test of labTests">
+        <td class="labelCell">${test.name}</td>
+        <td>
+          ${test.numericValue} ${test.textValue}
+          <span class="dateSuffix">- ${test.time | dateFormat:'MMMM Do YYYY, h:mm a'}</span>
+        </td>
+      </tr>
+    </table>
+    <br>
+    <h4>Pre-operative notes</h4>
+    <table class="table">
+      <tr repeat.for="note of orcaPreop">
+        <td class="labelCell">${note.reviewTitle}</td>
+        <td>
+          ${note.description}
+          <span class="dateSuffix">- ${note.time | dateFormat:'MMMM Do YYYY, h:mm a'}</span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div style="width: 48%; margin-left: 15px; padding: 50px;">
+    <h4>Summary information</h4>
+    <table class="table">
+      <tr>
+        <td class="labelCell">Age</td> <td>${summaryInfo.age} years</td>
+      </tr>
+      <tr>
+        <td class="labelCell">Gender</td> <td>${genderMap[summaryInfo.gender]}</td>
+      </tr>
+      <tr>
+        <td class="labelCell">Height</td> <td>${floor(summaryInfo.heightInches/12)} feet, ${summaryInfo.heightInches%12} inches</td>
+      </tr>
+      <tr>
+        <td class="labelCell">Weight</td> <td>${summaryInfo.weightPounds} pounds</td>
+      </tr>
+      <tr>
+        <td class="labelCell">BMI</td> <td>${(703*summaryInfo.weightPounds/(summaryInfo.heightInches*summaryInfo.heightInches)).toFixed(1)}</td>
+      </tr>
+      <tr>
+        <td class="labelCell">Procedure text</td> <td>${summaryInfo.procText}</td>
+      </tr>
+      <tr>
+        <td class="labelCell">ASA code</td> <td>${summaryInfo.asaCode}</td>
+      </tr>
+      <tr>
+        <td class="labelCell">CPT code</td>
+        <td>
+          <span style="font-weight: bold; color: #666; font-size: 12px;">${cptCodeMap[summaryInfo.cptCode].category}</span><br>
+          ${cptCodeMap[summaryInfo.cptCode] ? cptCodeMap[summaryInfo.cptCode].description : ''}
+        </td>
+      </tr>
+      <tr>
+        <td class="labelCell">Anesthesia type</td> <td>${summaryInfo.anesthesiaType}</td>
+      </tr>
+      <tr>
+        <td class="labelCell">Surgical diagnosis</td> <td>${summaryInfo.surgDiagnosis}</td>
+      </tr>
+      <tr>
+        <td class="labelCell">OR location</td> <td>${summaryInfo.orLocation}</td>
+      </tr>
+    </table>
+  </div>
+</template>

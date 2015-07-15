@@ -32,6 +32,7 @@ System.config({
     "font-awesome": "npm:font-awesome@4.3.0",
     "jquery-ui": "github:components/jqueryui@1.11.4",
     "lodash": "npm:lodash@3.9.3",
+    "moment": "github:moment/moment@2.10.3",
     "github:aurelia/animator-css@0.3.2": {
       "aurelia-templating": "github:aurelia/templating@0.12.1"
     },

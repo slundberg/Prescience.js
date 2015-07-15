@@ -1,28 +1,43 @@
 <template>
-  <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">
-        <i class="fa fa-home"></i>
-        <span>${router.title}</span>
-      </a>
-    </div>
+  <require from="./fade-out-if"></require>
 
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        <li repeat.for="row of router.navigation" class="${row.isActive ? 'active' : ''}">
-          <a href.bind="row.href">${row.title}</a>
-        </li>
-      </ul>
+  <nav class="navbar navbar-default navbar-fixed-top" style="height: 125px;" role="navigation">
+    <div style="padding: 10px; width: 100%; text-align: center;">
+      <div style="font-size: 18px; padding-bottom: 8px;">Estimated desaturation risk in the next 5 minutes</div>
+      <span repeat.for="score of userScores"><span class="btn btn-sm btn-default" click.delegate="$parent.recordScore(score)" css="width: 4.4%; font-size: 13px; padding-left: 0px; color: #fff; padding-right: 0px; padding-top: 5px; padding-bottom: 5px; cursor: pointer; background: ${$parent.scoreColorRamp(score)}">${score}</span><div style="display: inline-block; width: 2px; height: 10px;"></div></span>
 
-      <ul class="nav navbar-nav navbar-right">
-        <li class="loader" if.bind="router.isNavigating">
-          <i class="fa fa-spinner fa-spin fa-2x"></i>
-        </li>
-      </ul>
+      <div style="width: 48%; float: right; text-align: right; margin-right: 10px; margin-top: 5px; margin-bottom: -10px">
+        <span style="color: #d9534f; font-weight: bold">Extreme Risk</span><br>
+
+        <span style="font-size: 12px; line-height: 10px;">
+          The patient will have a desaturation event. (SaO2 drops below 92%)
+        </span>
+      </div>
+      <div style="width: 48%; text-align: left; margin-top: 5px; margin-left: 10px; margin-bottom: -10px">
+        <span style="color: #5cb85c; font-weight: bold">No Risk</span><br>
+        <span style="font-size: 12px; line-height: 10px;">
+        The patient will not have a desaturation event. (SaO2 does not drop below 92%)</span></p>
+      </div>
     </div>
   </nav>
 
-  <div class="page-host">
+  <div style="margin-top: 125px;">
     <router-view></router-view>
+  </div>
+  <br clear="all">
+  <div align="center">
+
+  </div>
+  <div class="footer" style="text-align: center; opacity: 0.75">
+    <img src="images/testingLogo.png" /><br>
+    <br>
+    <p><span class="glyphicon glyphicon-education"></span> &nbsp; Research with Su-In Lee, Jerry Kim, Bala Nair, Scott Lundberg, and Shu-Fang Newman</p>
+  </div>
+
+  <div id="recordingScorePanel" click.delegate="cancelRecordScore()" style="display: none; position: fixed; top: 0px; left: 0px; right: 0px; bottom: 0px; z-index: 10000; color: #fff; text-align: center; font-size: 24px;" valign="middle">
+    <div style="height: 40%"></div>
+    <span style="font-size: 64px">${recordingScore}</span><br>
+    Recording score...<br>
+    (click anywhere to cancel)
   </div>
 </template>
