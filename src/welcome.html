@@ -1,0 +1,38 @@
+<template>
+  <div id="welcomePanel" style="background: #1b71f1; position: fixed; top: 0px; left: 0px; right: 0px; bottom: 0px; z-index: 10002; color: #fff; text-align: center; font-size: 24px; overflow-y: auto;" valign="middle" align="center">
+    <div style="height: 15%"></div>
+    <img src="images/testingLogoWhite.png" style="margin-left: 15px;" /><br>
+    <br>
+    <div style="display: inline-block; max-width: 700px; padding: 20px; font-size: 14px; text-align: left;">
+      <span style="font-weight: bold; font-size: 16px;">Welcome!</span><br>
+      <span style="opacity: 0.8;">
+      This interface is designed to measure prediction accuracy for SaO2 desaturation events.
+      You are shown real anonymized procedures. At the beginning of each procedure you are
+      asked to provide a pre-operative risk, then at several random time points you are
+      asked to provide a risk for the next five mintues.
+      There are several things to keep in mind during use:</span>
+      <ul style="opacity: 0.8;">
+        <li style="margin: 7px;">You can cancel a prediction only during the record score panel. Otherwise future data will be shown and you cannot go backwards.</li>
+        <li style="margin: 7px;">While by default the past hour of all recorded time data is shown, you can drag to see other time regions, or double-click
+          to zoom in (shift-double-click to zoom out).</li>
+        <li style="margin: 7px;">Performance is considered anonymous and will be reported publicly only in aggregate.</li>
+      </ul>
+    </div><br>
+    <form if.bind="app.authenticated === false" class="form-inline">
+      <input type="text" value.bind="doctorId" class="form-control" style="display: inline-block; width: 130px;" placeholder="Enter doctor ID" />
+      <input type="password" value.bind="doctorPassword" class="form-control" style="margin-left: 5px; display: inline-block; width: 150px;" placeholder="Enter password" />
+      <a class="btn btn-default" click.delegate="login()" style="margin-left: 5px; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); color: #fff" role="button">Login</a><br>
+      <br>
+      <span style="font-size: 16px;" if.bind="loginFailed">Login failed! Please check your doctor ID/password and try again.</span>
+    </form>
+    <form if.bind="app.authenticated === true" class="form-inline">
+      <!-- <a class="btn btn-default" click.delegate="app.logout()" style="margin-left: 5px; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); color: #fff" role="button">
+        Log out
+      </a> -->
+      <a class="btn btn-default" click.delegate="begin()" style="margin-left: 5px; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); color: #fff" role="button">
+        Resume as ${app.user}
+      </a><br>
+    </form>
+    <br>
+  </div><!--click.delegate="startTesting()"href="#testing"-->
+</template>

@@ -48,12 +48,31 @@ export class Series {
 		this.xextent = d3.extent(data, d => d[0]);
 		this.yextent = d3.extent(data, d => d[1]);
 
-		this.path = d3.select(this.group).select("path")
+		// this.path = d3.select(this.group).select("path")
+        //     .attr("stroke", this.color)
+		// 	.attr("fill", "none")
+		// 	.attr("stroke-width", 1)
+		// 	//.attr("stroke-dasharray", "2,5,5,5")
+        //     .attr("opacity", 0.4);
+
+		var linkData = [];
+		for (var i = 1; i < data.length; ++i) {
+			if (data[i][0] - data[i-1][0] <= 60000) {
+				linkData.push([data[i-1], data[i]]);
+			}
+		}
+
+		this.lines = d3.select(this.group).selectAll(".linkLine").data(linkData);
+		this.lines.enter()
+			.append("line")
+			.attr("class", "linkLine")
             .attr("stroke", this.color)
 			.attr("fill", "none")
 			.attr("stroke-width", 1)
 			//.attr("stroke-dasharray", "2,5,5,5")
-            .attr("opacity", 0.4);
+            .attr("opacity", 1);
+		this.lines.exit()
+			.remove();
 
 		this.symbolScale.domain(this.yextent);
 		//this.symbolGenerator.size(d => this.symbolScale(d === undefined ? 0 : d[1]))
@@ -63,7 +82,9 @@ export class Series {
 			.attr("class", "symbol")
 		    .attr("transform", d => "translate(" + this.seriesPlot.xaxis.scale(d[0]) + "," + this.seriesPlot.yscale(d[1]) + ")")
 		    .attr("d", this.symbolGenerator)
-		  	.attr("fill", this.color);
+		  	.attr("fill", this.color)
+			.append("title")
+			.text(d => d[1]);
 		this.symbols.exit()
 			.remove();
 		this.scaleUpdated();
@@ -84,7 +105,12 @@ export class Series {
 
 	scaleUpdated() {
 		if (this.symbols && !this.hidden) {
-			this.path.attr("d", this.pathFunc(this.data));
+			//this.path.attr("d", this.pathFunc(this.data));
+			this.lines
+				.attr("x1", d =>this.seriesPlot.xaxis.scale(d[0][0]))
+				.attr("x2", d =>this.seriesPlot.xaxis.scale(d[1][0]))
+				.attr("y1", d =>this.seriesPlot.yscale(d[0][1]))
+				.attr("y2", d =>this.seriesPlot.yscale(d[1][1]));
 			this.symbols
 				.attr("transform", d => "translate(" + this.seriesPlot.xaxis.scale(d[0]) + "," + this.seriesPlot.yscale(d[1]) + ")");
 		}

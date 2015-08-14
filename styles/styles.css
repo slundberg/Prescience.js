@@ -13,6 +13,36 @@ body {
     font-size: 12px;
 }
 
+.riskButton {
+    display: inline-block;
+    text-align: center;
+    width: 4.4%;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.1);
+    font-size: 13px;
+    padding-left: 0px;
+    color: #fff;
+    padding-right: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    cursor: pointer;
+    border-radius: 2px;
+}
+
+.riskButton:hover {
+    border-color: rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.3);
+}
+
+.strokeme {
+    color: white;
+    text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
 .splash {
     text-align: center;
     margin: 10% 0 0 0;
@@ -83,6 +113,10 @@ div.au-stagger {
   height: 180px;
 }
 
+.fade-in {
+  -webkit-animation: fadeIn 2s;
+  animation: fadeIn 2s;
+}
 
 /* animation definitions */
 @-webkit-keyframes fadeInRight {
@@ -131,3 +165,27 @@ div.au-stagger {
     opacity: 1;
   }
 }
+
+
+/* Make clicks pass-through */
+#nprogress .bar {
+  background: #fff;
+  z-index: 20031;
+}
+
+/* Fancy blur effect */
+#nprogress .peg {
+  box-shadow: 0 0 10px #fff, 0 0 5px #fff;
+}
+
+/*#nprogress .spinner {
+  top: 50%;
+  right: 50%;
+  margin-right: -9px;
+  z-index: 20031;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: #fff;
+  border-left-color: #fff;
+}*/

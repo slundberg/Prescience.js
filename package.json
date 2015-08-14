@@ -59,12 +59,18 @@
       "font-awesome": "npm:font-awesome@^4.3.0",
       "jquery-ui": "github:components/jqueryui@^1.11.4",
       "lodash": "npm:lodash@^3.9.3",
-      "moment": "github:moment/moment@^2.10.3"
+      "moment": "github:moment/moment@^2.10.3",
+      "moment-timezone": "github:moment/moment-timezone@^0.4.0",
+      "moment/moment-timezone": "github:moment/moment-timezone@^0.4.0",
+      "nprogress": "github:rstacruz/nprogress@^0.2.0"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.1.13",
       "babel-runtime": "npm:babel-runtime@^5.1.13",
       "core-js": "npm:core-js@^0.9.4"
     }
+  },
+  "dependencies": {
+    "bcrypt": "^0.8.3"
   }
 }

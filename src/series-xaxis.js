@@ -4,17 +4,22 @@ import {inject, bindable} from 'aurelia-framework';
 export class SeriesXaxis {
 	@bindable width;
 	@bindable height;
+	@bindable color;
 
 	constructor(element) {
 		this.element = element;
 		this.scale = d3.time.scale();
 		this.registeredPlots = [];
 		window.this_xaxis = this;
-		this.zoom = d3.behavior.zoom().on("zoom", () => this.scaleUpdated());
+		this.zoom = d3.behavior.zoom().on("zoom", (a) => this.scaleUpdated());
 	}
 
 	attached() {
 		this.svg = d3.select(this.element).select("svg");
+		this.svg.call(this.zoom)
+			.on("wheel.zoom",null)
+	  		.on("mousewheel.zoom", null)
+	  		.on("DOMMouseScroll.zoom", null);
 
 		this.scaleUpdated();
 	}
@@ -46,14 +51,15 @@ export class SeriesXaxis {
 		var ticks = this.svg.selectAll("text").data(this.scale.ticks());
 		ticks.enter()
 		  	.append("svg:text")
-		  	.attr("text-anchor", "middle");
+		  	.attr("text-anchor", "middle")
+			.attr("fill", this.color);
 		ticks.exit()
 			.remove();
 		ticks
 			.attr("x", this.scale)
 		  	.attr("y", this.height)
 		  	.text(this.tickFormat);
-		
+
 		// All attached plots need to know
 		for (let i = 0; i < this.registeredPlots.length; ++i) {
 			this.registeredPlots[i].scaleUpdated();

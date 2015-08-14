@@ -1,43 +1,142 @@
 <template>
   <require from="./fade-out-if"></require>
+  <require from="./help-text"></require>
 
-  <nav class="navbar navbar-default navbar-fixed-top" style="height: 125px;" role="navigation">
+  <!-- The persistant scoring bar at the top-->
+  <nav class="navbar navbar-default navbar-fixed-top" style="height: 125px; background: #1b71f1; color: #fff; border: none;" role="navigation">
     <div style="padding: 10px; width: 100%; text-align: center;">
-      <div style="font-size: 18px; padding-bottom: 8px;">Estimated desaturation risk in the next 5 minutes</div>
-      <span repeat.for="score of userScores"><span class="btn btn-sm btn-default" click.delegate="$parent.recordScore(score)" css="width: 4.4%; font-size: 13px; padding-left: 0px; color: #fff; padding-right: 0px; padding-top: 5px; padding-bottom: 5px; cursor: pointer; background: ${$parent.scoreColorRamp(score)}">${score}</span><div style="display: inline-block; width: 2px; height: 10px;"></div></span>
+      <div style="font-size: 18px; padding-bottom: 8px;">
+        <span if.bind="inPreop">Estimate the risk of a desaturation at any point during this procedure</span>
+        <span if.bind="!inPreop">Estimate the risk of desaturation in the next 5 minutes</span>
+      </div>
+      <span repeat.for="score of userScores"><span class="riskButton" click.delegate="$parent.recordScore(score)" >${score}</span><div style="display: inline-block; width: 2px; height: 10px;"></div></span>
 
       <div style="width: 48%; float: right; text-align: right; margin-right: 10px; margin-top: 5px; margin-bottom: -10px">
-        <span style="color: #d9534f; font-weight: bold">Extreme Risk</span><br>
+        <span style="color: #fff; font-weight: bold">Extreme Risk</span><br><!--d9534f css="background: ${$parent.scoreColorRamp(score)}" -->
 
-        <span style="font-size: 12px; line-height: 10px;">
-          The patient will have a desaturation event. (SaO2 drops below 92%)
+        <span style="font-size: 12px; line-height: 10px; opacity: 0.8">
+          The patient will have a desaturation event. (SaO2 drops below 93%)
         </span>
       </div>
       <div style="width: 48%; text-align: left; margin-top: 5px; margin-left: 10px; margin-bottom: -10px">
-        <span style="color: #5cb85c; font-weight: bold">No Risk</span><br>
-        <span style="font-size: 12px; line-height: 10px;">
-        The patient will not have a desaturation event. (SaO2 does not drop below 92%)</span></p>
+        <span style="color: #fff; font-weight: bold">No Risk</span><br><!--5cb85c-->
+        <span style="font-size: 12px; line-height: 10px; opacity: 0.8">
+        The patient will not have a desaturation event. (SaO2 does not drop below 93%)</span></p>
       </div>
     </div>
   </nav>
 
-  <div style="margin-top: 125px;">
-    <router-view></router-view>
+  <!-- help and procID screen tags -->
+  <div style="position: fixed; top: 8px; right: 8px; font-size: 13px; float: left; z-index: 10001; opacity: 0.9;  color: #fff">
+    <span style="cursor: pointer;" click.delegate="help()">Help</span>
+    | <span style="cursor: pointer;" click.delegate="logout()">Log out as ${user}</span>
   </div>
-  <br clear="all">
-  <div align="center">
-
-  </div>
-  <div class="footer" style="text-align: center; opacity: 0.75">
-    <img src="images/testingLogo.png" /><br>
-    <br>
-    <p><span class="glyphicon glyphicon-education"></span> &nbsp; Research with Su-In Lee, Jerry Kim, Bala Nair, Scott Lundberg, and Shu-Fang Newman</p>
+  <div style="position: fixed; top: 8px; left: 8px; font-size: 13px; float: left; z-index: 10000; font-weight: normal; opacity: 0.9;  color: #fff">
+    Procedure ${testCaseIndex+1} of ${testPoints.length}
   </div>
 
-  <div id="recordingScorePanel" click.delegate="cancelRecordScore()" style="display: none; position: fixed; top: 0px; left: 0px; right: 0px; bottom: 0px; z-index: 10000; color: #fff; text-align: center; font-size: 24px;" valign="middle">
+  <!-- content area for the dashboard -->
+  <div style="background: #fff">
+    <div style="margin-top: 125px;">
+      <router-view></router-view>
+    </div>
+    <br clear="all">
+    <div class="footer" style="text-align: center; opacity: 0.75">
+      <img src="images/testingLogo.png" /><br>
+      <br>
+      <span class="glyphicon glyphicon-education"></span> &nbsp; Research with Su-In Lee, Jerry Kim, Bala Nair, Scott Lundberg, and Shu-Fang Newman<br>
+      <br>
+    </div>
+  </div>
+
+  <div id="recordingScorePanel" style="display: block; position: fixed; top: 0px; left: 0px; right: 0px; bottom: 0px; z-index: 10000; background: #1b71f1; color: #fff; text-align: center; font-size: 24px;" valign="middle">
     <div style="height: 40%"></div>
-    <span style="font-size: 64px">${recordingScore}</span><br>
-    Recording score...<br>
-    (click anywhere to cancel)
+
+    <!-- what we are recording -->
+    <span if.bind="recordingScore !== -1">
+      <span if.bind="testCaseTimeIndex === -1">
+        Recording a pre-operative risk prediction of ${recordingScore} for ${testPoints[testCaseIndex].id}...
+      </span>
+      <span if.bind="testCaseTimeIndex !== -1">
+        Recording a five minute risk prediction of ${recordingScore}...
+      </span><br>
+    </span>
+
+    <!-- describe what is next to the user so they know what to expect -->
+    <span style="font-size: 18px">
+      <br>
+      <span if.bind="nextTestCaseIndex === testCaseIndex">
+        <span if.bind="testCaseTimeIndex === -1">
+          Next up is the first time point in the <b>current case</b> ${testPoints[nextTestCaseIndex].id}.<br>
+        </span>
+        <span if.bind="testCaseTimeIndex !== -1">
+          Next up is a time point ${nextTestCaseTimeDiff} later in the <b>current case</b> ${testPoints[nextTestCaseIndex].id}.<br>
+        </span>
+        <br>
+        <br>
+        <form class="form-inline">
+          <a if.bind="recordingScore !== -1" class="btn btn-default" click.delegate="cancelRecordScore()" style="margin-left: 5px; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); color: #fff" role="button">
+            Cancel current prediction
+          </a>
+          <a class="btn btn-default" click.delegate="finishRecordScore()" style="margin-left: 5px; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); color: #fff" role="button">
+            <span if.bind="testCaseTimeIndex === -1">
+              Advance to first time point
+            </span>
+            <span if.bind="testCaseTimeIndex !== -1">
+              Advance time by ${nextTestCaseTimeDiff}
+            </span>
+          </a><br>
+        </form>
+      </span>
+      <span if.bind="nextTestCaseIndex !== testCaseIndex">
+        Next up is a pre-operative prediction for a <b>new case</b> ${testPoints[nextTestCaseIndex].id}.<br>
+        <br>
+        <br>
+        <form class="form-inline">
+          <a if.bind="recordingScore !== -1" class="btn btn-default" click.delegate="cancelRecordScore()" style="margin-left: 5px; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); color: #fff" role="button">
+            Cancel current prediction
+          </a>
+          <a class="btn btn-default" click.delegate="finishRecordScore()" style="margin-left: 5px; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); color: #fff" role="button">
+            Proceed to the next case
+          </a><br>
+        </form>
+      </span>
+    </span>
+    <br>
+    <br>
+  </div>
+
+  <div id="helpPanel" style="display: none; position: fixed; top: 0px; left: 0px; right: 0px; bottom: 0px; z-index: 10001; background: #1b71f1; color: #fff; text-align: center; font-size: 24px;" valign="middle">
+    <div style="height: 100%; overflow: scroll;">
+      <div style="height: 15%"></div>
+      <img src="images/testingLogoWhite.png" style="margin-left: 15px;" /><br>
+      <br>
+      <div style="display: inline-block; max-width: 700px; padding: 20px; font-size: 14px; text-align: left;">
+        <span style="font-weight: bold; font-size: 16px;">Help</span><br>
+        <span style="opacity: 0.8;">
+        This interface is designed to measure prediction accuracy for SaO2 desaturation events.
+        You are shown real anonymized procedures. At the beginning of each procedure you are
+        asked to provide a pre-operative risk, then at several random time points you are
+        asked to provide a risk for the next five mintues.
+        There are several things to keep in mind during use:</span>
+        <ul style="opacity: 0.8;">
+          <li style="margin: 7px;">You can cancel a prediction only during the record score panel. Otherwise future data will be shown and you cannot go backwards.</li>
+          <li style="margin: 7px;">While by default the past hour of all recorded time data is shown, you can drag to see other time regions, or double-click
+            to zoom in (shift-double-click to zoom out).</li>
+          <li style="margin: 7px;">Performance is considered anonymous and will be reported publicly only in aggregate.</li>
+        </ul>
+      </div><br>
+      <br>
+      <a class="btn btn-default" click.delegate="closeHelp()" style="margin-left: 5px; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); color: #fff" role="button">
+        Close help
+      </a><br>
+      <br>
+    </div>
+  </div>
+
+  <!-- this matches a loading panel in index.html -->
+  <div id="loadingPanel" style="position: fixed; top: 0px; left: 0px; right: 0px; bottom: 0px; z-index: 10001; background: #1b71f1; color: #fff; text-align: center; font-size: 24px;" valign="middle">
+    <div style="height: 15%"></div>
+    <img src="images/testingLogoWhite.png" style="margin-left: 15px;" />
   </div>
 </template>

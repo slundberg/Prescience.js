@@ -82,6 +82,7 @@ export class DosagePlot {
 	}
 
 	scaleUpdated() {
-		for (let et of this.dosageTypes) et.scaleUpdated();
+		for (let dt of this.dosageTypes) dt.scaleUpdated(d3.event && d3.event.scale === this.lastScale);
+		if (d3.event) this.lastScale = d3.event.scale;
 	}
 }

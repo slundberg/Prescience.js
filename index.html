@@ -2,11 +2,16 @@
 <html>
   <head>
     <title>Prescience</title>
+    <link rel="stylesheet" type="text/css" href="jspm_packages/github/rstacruz/nprogress@0.2.0/nprogress.css">
     <link rel="stylesheet" type="text/css" href="jspm_packages/npm/font-awesome@4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="styles/styles.css">
     <link rel="shortcut icon" href="favicon.png">
   </head>
-  <body aurelia-app="main">
+  <body aurelia-app="main" style="background: #1b71f1">
+    <script src="jspm_packages/github/rstacruz/nprogress@0.2.0/nprogress.js"></script>
+    <script>
+      NProgress.start();
+    </script>
     <script src="jspm_packages/system.js"></script>
     <script src="config.js"></script>
     <script>
@@ -19,5 +24,9 @@
     <script>
       System.import('aurelia-bootstrapper');
     </script>
+    <div id="loadingPanel" style="position: fixed; top: 0px; left: 0px; right: 0px; bottom: 0px; z-index: 10000; background: #1b71f1; color: #fff; text-align: center; font-size: 24px;" valign="middle">
+      <div style="height: 15%"></div>
+      <img src="images/testingLogoWhite.png" class="fade-in" style="margin-left: 15px;" />
+    </div>
   </body>
 </html>

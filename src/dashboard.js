@@ -1,15 +1,16 @@
-import {inject} from 'aurelia-framework';
+import {inject, bindable, ObserverLocator} from 'aurelia-framework';
 import {HttpClient} from 'aurelia-http-client';
 import {CptCodes} from './cpt-codes';
 import d3 from 'd3';
 import $ from 'bootstrap';
+import momenttz from 'moment-timezone';
 import moment from 'moment';
 import {App} from "./app"
 
-@inject(HttpClient, CptCodes, App)
+@inject(HttpClient, CptCodes, App, ObserverLocator)
 export class Dashboard {
 	width = window.innerWidth;
-	procId = "MLORB_0543310";
+	//procId = "MLORB_0543310";
 
 	genderMap = {
     	"F": "Female",
@@ -17,276 +18,6 @@ export class Dashboard {
     };
 
 	groups = [
-		{
-			type: "series",
-			label: "CCO",
-			units: "L/min",
-			color: "#a80808",
-			trackDefaults: {
-				type: "monitor",
-				timeField: "time"
-			},
-			tracks: [
-				{ sensor: "CCO", label: "CCO", valueField: "numericValue", symbol: "circle" }
-			]
-		},
-		{
-			type: "series",
-			label: "Heart rate",
-			units: "beats per min.",
-			color: "#a80808",
-			trackDefaults: {
-				type: "monitor",
-				timeField: "time",
-			},
-			tracks: [
-				{ sensor: "ECGRATE", label: "ECG rate", valueField: "numericValue", symbol: "circle" },
-				{ sensor: "PULSE", label: "Pulse", valueField: "numericValue", symbol: "square" }
-			]
-		},
-		{
-			type: "series",
-			label: "Non-invasive BP",
-			units: "mmHg",
-			color: "#a80808",
-			trackDefaults: {
-				type: "monitor",
-				timeField: "time",
-			},
-			tracks: [
-				{ sensor: "NIBPS", label: "Systolic", valueField: "numericValue", symbol: "triangle-down" },
-				{ sensor: "NIBPM", label: "Mean", valueField: "numericValue", symbol: "square" },
-				{ sensor: "NIBPD", label: "Diastolic", valueField: "numericValue", symbol: "triangle-up" }
-			]
-		},
-		{
-			type: "series",
-			label: "Arterial BP",
-			units: "mmHg",
-			color: "#a80808",
-			trackDefaults: {
-				type: "monitor",
-				timeField: "time",
-			},
-			tracks: [
-				{ sensor: "ABPS1", label: "Systolic", valueField: "numericValue", symbol: "triangle-down" },
-				{ sensor: "ABPM1", label: "Mean", valueField: "numericValue", symbol: "square" },
-				{ sensor: "ABPD1", label: "Diastolic", valueField: "numericValue", symbol: "triangle-up" }
-			]
-		},
-		{
-			type: "series",
-			label: "Arterial BP 2",
-			units: "mmHg",
-			color: "#a80808",
-			trackDefaults: {
-				type: "monitor",
-				timeField: "time",
-			},
-			tracks: [
-				{ sensor: "ABPS2", label: "Systolic", valueField: "numericValue", symbol: "triangle-down" },
-				{ sensor: "ABPM2", label: "Mean", valueField: "numericValue", symbol: "square" },
-				{ sensor: "ABPD2", label: "Diastolic", valueField: "numericValue", symbol: "triangle-up" }
-			]
-		},
-		{
-			type: "series",
-			label: "Pulmonary artery BP",
-			units: "mmHg",
-			color: "#a80808",
-			trackDefaults: {
-				type: "monitor",
-				timeField: "time",
-			},
-			tracks: [
-				{ sensor: "PAS", label: "Systolic", valueField: "numericValue", symbol: "triangle-down" },
-				{ sensor: "PAM", label: "Mean", valueField: "numericValue", symbol: "square" },
-				{ sensor: "PAD", label: "Diastolic", valueField: "numericValue", symbol: "triangle-up" }
-			]
-		},
-		{
-			type: "series",
-			label: "CVP",
-			units: "mmHg",
-			color: "#a80808",
-			trackDefaults: {
-				type: "monitor",
-				timeField: "time",
-			},
-			tracks: [
-				{ sensor: "CVP", label: "CVP", valueField: "numericValue", symbol: "circle" }
-			]
-		},
-		{
-			type: "series",
-			label: "Blood saturation",
-			units: "%",
-			color: "#a80808",
-			trackDefaults: {
-				type: "monitor",
-				timeField: "time",
-			},
-			tracks: [
-				{ sensor: "SAO2", label: "SaO2", valueField: "numericValue", symbol: "circle" },
-				{ sensor: "SVO2", label: "SvO2", valueField: "numericValue", symbol: "square" }
-			]
-		},
-		{
-			type: "series",
-			label: "Inspired conc.",
-			units: "%",
-			color: "#1b71f1",
-			trackDefaults: {
-				type: "monitor",
-				timeField: "time",
-			},
-			tracks: [
-				{ sensor: "FIO2", label: "FiO2", valueField: "numericValue", symbol: "circle" },
-				{ sensor: "FINO", label: "FiNO", valueField: "numericValue", symbol: "square" }
-			]
-		},
-		{
-			type: "series",
-			label: "End-tidal pressure",
-			units: "mmHg",
-			color: "#1b71f1",
-			trackDefaults: {
-				type: "monitor",
-				timeField: "time",
-			},
-			tracks: [
-				{ sensor: "ETCO2", label: "End-tidal CO2", valueField: "numericValue", symbol: "circle" },
-			]
-		},
-		{
-			type: "series",
-			label: "End-tidal conc.",
-			units: "%",
-			color: "#1b71f1",
-			trackDefaults: {
-				type: "monitor",
-				timeField: "time",
-			},
-			tracks: [
-		        { sensor: "ETSEV", label: "Sevoflurane'", valueField: "numericValue", symbol: "circle" },
-		        { sensor: "ETSEVO", label: "Sevoflurane", valueField: "numericValue", symbol: "triangle-down" },
-		        { sensor: "ETISO", label: "Isoflurane", valueField: "numericValue", symbol: "square" },
-		        { sensor: "ETDES", label: "Desflurane", valueField: "numericValue", symbol: "diamond" },
-		        { sensor: "ETHAL", label: "Halothane", valueField: "numericValue", symbol: "cross" }
-			]
-		},
-		{
-			type: "series",
-			label: "Air pressure",
-			units: "cm H2O",
-			color: "#1b71f1",
-			trackDefaults: {
-				type: "monitor",
-				timeField: "time",
-			},
-			tracks: [
-				{ sensor: "PEAK", label: "Peak pressure setting", valueField: "numericValue", symbol: "circle" },
-				{ sensor: "PEAKPRESSURE", label: "Peak pressure setting", valueField: "numericValue", symbol: "square" },
-				{ sensor: "PEEP", label: "PEEP", valueField: "numericValue", symbol: "diamond" },
-				{ sensor: "PIP", label: "PIP", valueField: "numericValue", symbol: "triangle-down" }
-			]
-		},
-		{
-			type: "series",
-			label: "Respiration rate",
-			units: "breaths per min.",
-			color: "#1b71f1",
-			trackDefaults: {
-				type: "monitor",
-				timeField: "time",
-			},
-			tracks: [
-				{ sensor: "RESPRATE", label: "Respiration rate", valueField: "numericValue", symbol: "circle" },
-				{ sensor: "RATE", label: "Rate", valueField: "numericValue", symbol: "diamond" }
-			]
-		},
-		{
-			type: "series",
-			label: "Air flow",
-			units: "L/min",
-			color: "#1b71f1",
-			trackDefaults: {
-				type: "monitor",
-				timeField: "time",
-			},
-			tracks: [
-				{ sensor: "AIRFLOW", label: "Air flow", valueField: "numericValue", symbol: "circle" },
-				{ sensor: "O2FLOW", label: "O2 flow", valueField: "numericValue", symbol: "square" },
-				{ sensor: "N2OFLOW", label: "N2O flow", valueField: "numericValue", symbol: "diamond" }
-			]
-		},
-		{
-			type: "series",
-			label: "Air volume",
-			units: "liters",
-			color: "#1b71f1",
-			trackDefaults: {
-				type: "monitor",
-				timeField: "time",
-			},
-			tracks: [
-				{ sensor: "TIDALVOLUME", label: "Tidal volume", valueField: "numericValue", symbol: "circle" },
-				{ sensor: "TV", label: "Tidal volume", valueField: "numericValue", symbol: "square" }
-			]
-		},
-		{
-			type: "series",
-			label: "Bispectral index",
-			units: "unitless",
-			color: "#db8b00",
-			trackDefaults: {
-				type: "monitor",
-				timeField: "time",
-			},
-			tracks: [
-				{ sensor: "BIS", label: "Index", valueField: "numericValue", symbol: "circle" }
-			]
-		},
-		{
-			type: "series",
-			label: "Electromyography",
-			units: "unitless",
-			color: "#db8b00",
-			trackDefaults: {
-				type: "monitor",
-				timeField: "time",
-			},
-			tracks: [
-				{ sensor: "EMG", label: "EMG", valueField: "numericValue", symbol: "circle" }
-			]
-		},
-		{
-			type: "series",
-			label: "IC pressure",
-			units: "mmHg",
-			color: "#db8b00",
-			trackDefaults: {
-				type: "monitor",
-				timeField: "time",
-			},
-			tracks: [
-				{ sensor: "ICP", label: "pressure", valueField: "numericValue", symbol: "circle" }
-			]
-		},
-		{
-			type: "series",
-			label: "Temperature",
-			units: "degrees Celsius",
-			color: "#db8b00",
-			trackDefaults: {
-				type: "monitor",
-				timeField: "time",
-			},
-			tracks: [
-				{ sensor: "TEMP1", label: "Temp. 1", valueField: "numericValue", symbol: "circle" },
-				{ sensor: "TEMP2", label: "Temp. 2", valueField: "numericValue", symbol: "square" }
-			]
-		},
 		{
 			type: "dosage",
 			color: "#ab4dce",
@@ -418,6 +149,276 @@ export class Dashboard {
 			]
 		},
 		{
+			type: "series",
+			label: "CCO",
+			units: "L/min",
+			trackDefaults: {
+				type: "monitor",
+				timeField: "time",
+				color: "#a80808"
+			},
+			tracks: [
+				{ sensor: "CCO", label: "CCO", valueField: "numericValue", symbol: "circle" }
+			]
+		},
+		{
+			type: "series",
+			label: "Heart rate",
+			units: "beats per min.",
+			trackDefaults: {
+				type: "monitor",
+				timeField: "time",
+				color: "#a80808"
+			},
+			tracks: [
+				{ sensor: "ECGRATE", label: "ECG rate", valueField: "numericValue", symbol: "circle" },
+				{ sensor: "PULSE", label: "Pulse", valueField: "numericValue", symbol: "square", color: "#da8b8b" }
+			]
+		},
+		{
+			type: "series",
+			label: "Non-invasive BP",
+			units: "mmHg",
+			trackDefaults: {
+				type: "monitor",
+				timeField: "time",
+				color: "#a80808"
+			},
+			tracks: [
+				{ sensor: "NIBPS", label: "Systolic", valueField: "numericValue", symbol: "triangle-down", color: "#da8b8b" },
+				{ sensor: "NIBPM", label: "Mean", valueField: "numericValue", symbol: "square" },
+				{ sensor: "NIBPD", label: "Diastolic", valueField: "numericValue", symbol: "triangle-up", color: "#da8b8b" }
+			]
+		},
+		{
+			type: "series",
+			label: "Arterial BP",
+			units: "mmHg",
+			trackDefaults: {
+				type: "monitor",
+				timeField: "time",
+				color: "#a80808"
+			},
+			tracks: [
+				{ sensor: "ABPS1", label: "Systolic", valueField: "numericValue", symbol: "triangle-down", color: "#da8b8b" },
+				{ sensor: "ABPM1", label: "Mean", valueField: "numericValue", symbol: "square" },
+				{ sensor: "ABPD1", label: "Diastolic", valueField: "numericValue", symbol: "triangle-up", color: "#da8b8b" }
+			]
+		},
+		{
+			type: "series",
+			label: "Arterial BP 2",
+			units: "mmHg",
+			trackDefaults: {
+				type: "monitor",
+				timeField: "time",
+				color: "#a80808"
+			},
+			tracks: [
+				{ sensor: "ABPS2", label: "Systolic", valueField: "numericValue", symbol: "triangle-down", color: "#da8b8b" },
+				{ sensor: "ABPM2", label: "Mean", valueField: "numericValue", symbol: "square" },
+				{ sensor: "ABPD2", label: "Diastolic", valueField: "numericValue", symbol: "triangle-up", color: "#da8b8b" }
+			]
+		},
+		{
+			type: "series",
+			label: "Pulmonary artery BP",
+			units: "mmHg",
+			trackDefaults: {
+				type: "monitor",
+				timeField: "time",
+				color: "#a80808"
+			},
+			tracks: [
+				{ sensor: "PAS", label: "Systolic", valueField: "numericValue", symbol: "triangle-down", color: "#da8b8b" },
+				{ sensor: "PAM", label: "Mean", valueField: "numericValue", symbol: "square" },
+				{ sensor: "PAD", label: "Diastolic", valueField: "numericValue", symbol: "triangle-up", color: "#da8b8b" }
+			]
+		},
+		{
+			type: "series",
+			label: "CVP",
+			units: "mmHg",
+			trackDefaults: {
+				type: "monitor",
+				timeField: "time",
+				color: "#a80808"
+			},
+			tracks: [
+				{ sensor: "CVP", label: "CVP", valueField: "numericValue", symbol: "circle" }
+			]
+		},
+		{
+			type: "series",
+			label: "Blood saturation",
+			units: "%",
+			trackDefaults: {
+				type: "monitor",
+				timeField: "time",
+				color: "#a80808"
+			},
+			tracks: [
+				{ sensor: "SAO2", label: "SaO2", valueField: "numericValue", symbol: "circle" },
+				{ sensor: "SVO2", label: "SvO2", valueField: "numericValue", symbol: "square", color: "#da8b8b" }
+			]
+		},
+		{
+			type: "series",
+			label: "Inspired conc.",
+			units: "%",
+			trackDefaults: {
+				type: "monitor",
+				timeField: "time",
+				color: "#1b71f1"
+			},
+			tracks: [
+				{ sensor: "FIO2", label: "FiO2", valueField: "numericValue", symbol: "circle" },
+				{ sensor: "FINO", label: "FiNO", valueField: "numericValue", symbol: "square" }
+			]
+		},
+		{
+			type: "series",
+			label: "End-tidal pressure",
+			units: "mmHg",
+			trackDefaults: {
+				type: "monitor",
+				timeField: "time",
+				color: "#1b71f1"
+			},
+			tracks: [
+				{ sensor: "ETCO2", label: "End-tidal CO2", valueField: "numericValue", symbol: "circle" },
+			]
+		},
+		{
+			type: "series",
+			label: "End-tidal conc.",
+			units: "%",
+			trackDefaults: {
+				type: "monitor",
+				timeField: "time",
+				color: "#1b71f1"
+			},
+			tracks: [
+		        { sensor: "ETSEV", label: "Sevoflurane", valueField: "numericValue", symbol: "circle" },
+		        { sensor: "ETSEVO", label: "Sevoflurane", valueField: "numericValue", symbol: "circle" },
+		        { sensor: "ETISO", label: "Isoflurane", valueField: "numericValue", symbol: "square", color: "#84b1f4" },
+		        { sensor: "ETDES", label: "Desflurane", valueField: "numericValue", symbol: "diamond", color: "#b1cbf2" },
+		        { sensor: "ETHAL", label: "Halothane", valueField: "numericValue", symbol: "cross", color: "#4e90f2" }
+			]
+		},
+		{
+			type: "series",
+			label: "Air pressure",
+			units: "cm H2O",
+			trackDefaults: {
+				type: "monitor",
+				timeField: "time",
+				color: "#1b71f1"
+			},
+			tracks: [
+				{ sensor: "PEAK", label: "Peak pressure setting", valueField: "numericValue", symbol: "circle" },
+				{ sensor: "PEAKPRESSURE", label: "Peak pressure setting", valueField: "numericValue", symbol: "circle" },
+				{ sensor: "PIP", label: "Peak pressure setting", valueField: "numericValue", symbol: "circle" },
+				{ sensor: "PEEP", label: "PEEP", valueField: "numericValue", symbol: "square", color: "#84b1f4" },
+			]
+		},
+		{
+			type: "series",
+			label: "Respiration rate",
+			units: "breaths per min.",
+			trackDefaults: {
+				type: "monitor",
+				timeField: "time",
+				color: "#1b71f1"
+			},
+			tracks: [
+				{ sensor: "RESPRATE", label: "Respiration rate", valueField: "numericValue", symbol: "circle" },
+				{ sensor: "RATE", label: "Rate", valueField: "numericValue", symbol: "diamond", color: "#84b1f4" }
+			]
+		},
+		{
+			type: "series",
+			label: "Air flow",
+			units: "L/min",
+			trackDefaults: {
+				type: "monitor",
+				timeField: "time",
+				color: "#1b71f1"
+			},
+			tracks: [
+				{ sensor: "AIRFLOW", label: "Air flow", valueField: "numericValue", symbol: "circle" },
+				{ sensor: "O2FLOW", label: "O2 flow", valueField: "numericValue", symbol: "square", color: "#84b1f4" },
+				{ sensor: "N2OFLOW", label: "N2O flow", valueField: "numericValue", symbol: "diamond", color: "#b1cbf2" }
+			]
+		},
+		{
+			type: "series",
+			label: "Air volume",
+			units: "liters",
+			trackDefaults: {
+				type: "monitor",
+				timeField: "time",
+				color: "#1b71f1"
+			},
+			tracks: [
+				{ sensor: "TV", label: "Tidal volume", valueField: "numericValue", symbol: "circle" },
+				{ sensor: "TIDALVOLUME", label: "Tidal volume", valueField: "numericValue", symbol: "circle" },
+			]
+		},
+		{
+			type: "series",
+			label: "Bispectral index",
+			units: "unitless",
+			trackDefaults: {
+				type: "monitor",
+				timeField: "time",
+				color: "#db8b00"
+			},
+			tracks: [
+				{ sensor: "BIS", label: "Index", valueField: "numericValue", symbol: "circle" }
+			]
+		},
+		{
+			type: "series",
+			label: "Electromyography",
+			units: "unitless",
+			trackDefaults: {
+				type: "monitor",
+				timeField: "time",
+				color: "#db8b00"
+			},
+			tracks: [
+				{ sensor: "EMG", label: "EMG", valueField: "numericValue", symbol: "circle" }
+			]
+		},
+		{
+			type: "series",
+			label: "IC pressure",
+			units: "mmHg",
+			trackDefaults: {
+				type: "monitor",
+				timeField: "time",
+				color: "#db8b00"
+			},
+			tracks: [
+				{ sensor: "ICP", label: "pressure", valueField: "numericValue", symbol: "circle" }
+			]
+		},
+		{
+			type: "series",
+			label: "Temperature",
+			units: "degrees Celsius",
+			trackDefaults: {
+				type: "monitor",
+				timeField: "time",
+				color: "#db8b00"
+			},
+			tracks: [
+				{ sensor: "TEMP1", label: "Temp. 1", valueField: "numericValue", symbol: "circle" },
+				{ sensor: "TEMP2", label: "Temp. 2", valueField: "numericValue", symbol: "square", color: "#e0b66d" }
+			]
+		},
+		{
 			type: "dosage",
 			color: "#db8b00",
 			trackDefaults: {
@@ -464,8 +465,9 @@ export class Dashboard {
 		}
 	];
 
-	constructor(http, cptCodes, app) {
+	constructor(http, cptCodes, app, observerLocator) {
 		this.http = http;
+		this.observerLocator = observerLocator;
 		this.dateFormat = d3.time.format("%Y-%m-%d %H:%M:%S.%L");
 		window.this10 = this;
 		this.cptCodeMap = cptCodes.cptCodeMap;
@@ -474,62 +476,78 @@ export class Dashboard {
 	    //this.userScoreColors = this.userScores.map(x => {value: x, color: ramp(x)});
 		//r = new RegExp("[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9].000")
 		// this.http.get("data/merged.validation.subsample5050.doctortest.realtime.json").then(response => {
-		//
-		//
-		// 	this.data = response.content[2];
-		// 	this.replaceDates(this.data);
-		// 	// parse all the dates in this procedure
-		// 	// for (let key of ["monitor", "medication", "fluid"]) {
-		// 	// 	for (let dataType in this.data[key]) {
-		// 	// 		for (let d of this.data[key][dataType]) {
-		// 	// 			d[0] = this.dateFormat.parse(d[0]);
-		// 	// 		}
-		// 	// 	}
-		// 	// }
-		// 	// d[0] = this.dateFormat.parse(d[0]);
-		// 	console.log(response.content);
-		// });
-		// window.http3 = this.http;createRequest()
-		// 	.withHeader("Authorization", "Basic "+btoa("admin:PASS"))
-		// 	.asGet()
-		// 	.send
 
-
+		var subscription = this.observerLocator
+			.getObserver(this, 'labTestsInViewport')
+			.subscribe(() => this.labTestsInViewportChanged());
 
 		this.displayedGroups = [];
 		window.groups3 = this.groups;
+
+		this.momenttz = momenttz;
 
 		this.colors = ["color: #f00", "color: #0f0", "color: #00f"];
 	}
 
 	attached() {
 		window.addEventListener('resize', this.onWindowResize);
+		console.log("token", this.app.authToken);
 
-		this.http.get("/db/prescience/_search?size=50000&q=procId:"+this.procId).then(response => {
+		//this.loadProc(this.procId);
+		window.groups3 = this.groups;
+	}
+
+	bind() {
+		this.app.startTesting();
+	}
+
+	loadProc(id, callback) {
+		if (this.loadedProcId === id) {
+			callback();
+			return;
+		}
+		this.procId = id;
+		this.http.createRequest("/db/prescience/_search?size=50000&q=procId:"+id)
+			.withHeader('Prescience-User', sessionStorage.user)
+            .withHeader('Prescience-Token', sessionStorage.token)
+			.asGet().send().then((response,tmp) => {
 
 			// convert all the time fields to date objects
 			for (let hit of response.content.hits.hits) {
 				for (let key in hit._source) {
 					if (typeof(hit._source[key]) === "string") {
 						var t = this.dateFormat.parse(hit._source[key]);
-						if (t !== null) hit._source[key] = t;
+						if (t !== null) {
+							hit._source[key] = moment.tz(hit._source[key], "America/Los_Angeles").toDate();
+						}
 					}
 				}
 			}
 
 			// get the summary info then set our inital time viewing window
 			this.summaryInfo = response.content.hits.hits.find(x => x._source.type == "summaryinfo")._source;
-			this.currentTime = this.summaryInfo.anesthesiaReadyTime;
+			console.log("this.summaryInfo", this.summaryInfo)
+			this.currentTime = moment(this.summaryInfo.anesthesiaReadyTime).subtract(2, "hours").toDate();
+			this.inPreop = true;
+			//this.summaryInfo.anesthesiaReadyTime;
 			this.xaxis.domain([moment(this.currentTime).subtract(70, "minutes").toDate(), moment(this.currentTime).add(10, "minutes").toDate()]);
 			console.log([moment(this.currentTime).subtract(70, "minutes").toDate(), moment(this.currentTime).add(10, "minutes").toDate()])
 
+			this.loadedProcId = id;
+
+			this.tmp2 = tmp;
 			this.response = response;
 			this.drawPast();
-			console.log("reponse", response.content);
+			callback();
+			console.log("reponse", response.content, tmp);
 		}).catch(x => {
 			console.log("error", x);
 		});
 		window.groups3 = this.groups;
+	}
+
+	labTestsInViewportChanged() {
+		if (this.labTestsInViewport) this.newLabTests = false;
 	}
 
 	drawPast() {
@@ -543,6 +561,11 @@ export class Dashboard {
 			.filter(x => x._source.type == "lab")
 			.filter(x => x._source.time <= this.currentTime)
 			.map(x => x._source);
+
+		this.newLabTests = this.newLabTests !== undefined
+			&& (this.numLabTests !== this.labTests.length)
+			&& !this.labTestsInViewport;
+		this.numLabTests = this.labTests.length;
 
 		// pull out the dates we want to show as events
 		this.procEvents = [
@@ -564,38 +587,51 @@ export class Dashboard {
 
 		// load all the data into the groups
 		this.displayedGroups = [];
+
 		for (let group of this.groups) {
-			for (let track of group.tracks) {
-				var trackMerged = $.extend({}, trackDefaults, group.trackDefaults, track);
-				//var type = track.type !== undefined ? track.type : group.trackDefaults.type;
-				//var timeField = track.timeField !== undefined ? track.timeField : group.trackDefaults.timeField;
-				//var valueFields = track.valueFields !== undefined ? track.valueFields : group.trackDefaults.valueFields;
+			var trackDataFound = {};
+			group.hasData = false;
+			for (let i in group.tracks) {
+				group.tracks[i] = $.extend({}, trackDefaults, group.trackDefaults, group.tracks[i]);
+				let track = group.tracks[i];
+
+				// skip over redudant tracks, which means an earlier track
+				// with the same label and symbol had data
+				if (trackDataFound[track.label+"_"+track.symbol]) continue;
+
 				track.data = this.response.content.hits.hits
-					.filter(x => x._source.type === trackMerged.type && x._source[trackMerged.sensorField] === track.sensor);
+					.filter(x => x._source.type === track.type && x._source[track.sensorField] === track.sensor);
 
 				if (group.type === "series") {
+
 					track.data = track.data.map(x => [
-						x._source[trackMerged.timeField],
-						x._source[trackMerged.valueField]
+						x._source[track.timeField],
+						x._source[track.valueField]
 					]).filter(x => x[0] <= this.currentTime).sort();
 
 				} else if (group.type === "dosage") {
 					track.data = track.data.map(x => [
-						x._source[trackMerged.timeField],
-						x._source[trackMerged.valueField],
-						x._source[trackMerged.unitsField]
+						x._source[track.timeField],
+						x._source[track.valueField],
+						x._source[track.unitsField].toLowerCase()
 					]).filter(x => x[0] <= this.currentTime).sort();
 
 				} else if (group.type === "bar-area") {
 					track.data = track.data.map(x => [
-						x._source[trackMerged.timeField],
-						x._source[trackMerged.valueField]
+						x._source[track.timeField],
+						x._source[track.valueField]
 					]).filter(x => x[0] <= this.currentTime).sort();
 				}
-				if (track.data.length > 0) group.hasData = true;
+
+				if (track.data.length > 0) {
+					group.hasData = true;
+					trackDataFound[track.label+"_"+track.symbol] = true;
+				}
 			}
 			if (group.hasData) this.displayedGroups.push(group);
 		}
+
+		this.app.doneLoading();
 	}
 
 	advanceTime(minutes) {
@@ -603,6 +639,21 @@ export class Dashboard {
 		this.xaxis.domain([moment(this.currentTime).subtract(70, "minutes").toDate(), moment(this.currentTime).add(10, "minutes").toDate()]);
 		//this.xaxis.domain(this.xaxis.domain().map(d => moment(d).add(minutes, "minutes").toDate()));
 		//if (this.xaxis.domain()[1] < this.currentTime) this.xaxis.domain([this.xaxis.domain()[0], this.currentTime]);
+
+		// this.http.createRequest("/db/prescience/_search?size=50000&q=procId:"+this.procId)
+		// 	.asPut()
+		// 	.withHeader('Authorization', this.app.authToken)
+		// 	.withContent({})
+		// 	.send().then((response,tmp) => {
+		//
+		// 	});
+
+		this.drawPast();
+	}
+
+	setTime(time) {
+		this.currentTime = time;
+		this.xaxis.domain([moment(this.currentTime).subtract(70, "minutes").toDate(), moment(this.currentTime).add(10, "minutes").toDate()]);
 		this.drawPast();
 	}
 
@@ -619,20 +670,25 @@ export class Dashboard {
 	}
 
 	// recursively replace all string dates in the object with data objects
-	replaceDates(obj) {
-		for (var key in obj) {
-			if (typeof(obj[key]) === "string") {
-				var date = this.dateFormat.parse(obj[key]);
-				if (date !== null) obj[key] = date;
-			} else if (typeof(obj[key]) === "object" || typeof(obj[key]) === "array") {
-				this.replaceDates(obj[key]);
-			}
-		}
-	}
+	// replaceDates(obj) {
+	// 	for (var key in obj) {
+	// 		if (typeof(obj[key]) === "string") {
+	// 			var date = this.dateFormat.parse(obj[key]);
+	// 			if (date !== null) {
+	// 				console.log("YYY", momenttz(obj[key], "America/Los_Angeles").toDate(), date);
+	// 				obj[key] = momenttz(obj[key], "America/Los_Angeles").toDate();
+	// 			}
+	// 		} else if (typeof(obj[key]) === "object" || typeof(obj[key]) === "array") {
+	// 			this.replaceDates(obj[key]);
+	// 		}
+	// 	}
+	// }
 
 	floor(x) {
 		return Math.floor(x);
 	}
+
+
 
 
 	// removeNulls(obj) {

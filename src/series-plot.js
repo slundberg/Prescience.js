@@ -8,7 +8,7 @@ export class SeriesPlot {
 	@bindable xaxis;
 	@bindable ylabel;
 	@bindable yunits;
-	@bindable now;
+	@bindable color;
 
 	constructor(element) {
 		this.element = element;
@@ -94,7 +94,16 @@ export class SeriesPlot {
 	}
 
 	scaleUpdated() {
-		for (let s of this.series) s.scaleUpdated();
+		if (this.zoomable && d3.event) {
+			if (d3.event.scale === this.lastScale) {
+				this.zoomable.attr("transform", d => "translate(" + (d3.event.translate[0]-this.lastTranslate) + ")");
+			} else {
+				this.lastTranslate = d3.event.translate[0];
+				this.lastScale = d3.event.scale;
+				this.zoomable.attr("transform", d => "translate(0)");
+				for (let s of this.series) s.scaleUpdated();
+			}
+		}
 	}
 
 	buildColorSet(numColors) {

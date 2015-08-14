@@ -58,7 +58,7 @@ export class Dosage {
 		this.labels.enter()
 			.append("text")
 		    //.attr("transform", d => "translate(" + this.dosagePlot.xaxis.scale(d[0]) + "," + this.ypos + ")")
-            .text(d => d[1] + " " + d[2])
+            //.text(d => d[1] + " " + d[2] + " a" + this.label)
             .attr("text-anchor", "start")
             .attr("font-size", "11px")
             .attr("alignment-baseline", "middle")
@@ -83,10 +83,10 @@ export class Dosage {
 
 	scaleUpdated(translateOnly) {
 		if (this.symbols && this.labels) {
+			var s = this.dosagePlot.xaxis.scale;
 
-            // Mark regions of data label overlap
+			// Mark regions of data label overlap
             if (!translateOnly) {
-                var s = this.dosagePlot.xaxis.scale;
                 for (var i = 0; i < this.data.length; ++i) {
                     this.data[i].labelOverlaps = i !== this.data.length-1 && s(this.data[i+1][0]) - s(this.data[i][0]) < 100;
                     if (i !== this.data.length-1) this.data[i].nextDist = s(this.data[i+1][0]) - s(this.data[i][0]);
@@ -103,9 +103,9 @@ export class Dosage {
                         }
                     } else if (i !== 0 && this.data[i-1].labelOverlaps)  {
                         this.data[i].overlapValueTotal += this.data[i-1].overlapValueTotal;
-                        this.data[i].labelText = ") "+(+this.data[i].overlapValueTotal.toFixed(4)) + " " + this.data[i][2] + " total";
+                        this.data[i].labelText = ") "+(+this.data[i].overlapValueTotal.toFixed(4)) + " " + this.data[i][2] + " total" + " " + this.label;
                     } else {
-                        this.data[i].labelText = (+this.data[i].overlapValueTotal.toFixed(4)) + " " + this.data[i][2];
+                        this.data[i].labelText = (+this.data[i].overlapValueTotal.toFixed(4)) + " " + this.data[i][2] + " " + this.label;
                     }
                 }
 
